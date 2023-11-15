@@ -1,4 +1,4 @@
-Package: prod_dyn
+Package: prodynR
 Type: Package
 Title: Fish biomass dynamics modeling
 Version: 0.0.1.0
