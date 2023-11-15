@@ -77,7 +77,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                           M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                           Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                           t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, K_sup.mu = 100, K_sup.sd = 1, output.type = "basic")
+                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
     }
   } else if (par_to_vary == "K") {
     for (i in 1:N_sim) {
@@ -85,7 +85,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                           M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                           Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = range[i], K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                           t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, K_sup.mu = 100, K_sup.sd = 1, output.type = "basic")
+                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
     }
   } else if (par_to_vary == "Linf") {
     for (i in 1:N_sim) {
@@ -93,7 +93,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                           M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                           Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = range[i], Linf.sd = Linf.sd,
                           t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, K_sup.mu = 100, K_sup.sd = 1, output.type = "basic")
+                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
     }
   } else if (par_to_vary == "Lm") {
     for (i in 1:N_sim) {
@@ -101,7 +101,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                           M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                           Lm.mu = range[i], Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                           t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, K_sup.mu = 100, K_sup.sd = 1, output.type = "basic")
+                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
     }
   }
   
@@ -128,7 +128,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, K_sup.mu = 100, K_sup.sd = 1, output.type = "basic")
+                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
     
   } else if (par_to_vary == "K") {
     
@@ -136,7 +136,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = baseline$mean, K.sd = ((baseline$up - baseline$low)/3.92), Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, K_sup.mu = 100, K_sup.sd = 1, output.type = "basic")
+                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
     
   } else if (par_to_vary == "Linf") {
     
@@ -144,7 +144,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = baseline$mean, Linf.sd = ((baseline$up - baseline$low)/3.92),
                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, K_sup.mu = 100, K_sup.sd = 1, output.type = "basic")
+                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
     
   } else if (par_to_vary == "Lm") {
     
@@ -152,7 +152,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                            Lm.mu = baseline$mean, Lm.sd = ((baseline$up - baseline$low)/3.92), K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, K_sup.mu = 100, K_sup.sd = 1, output.type = "basic")
+                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
     
   }
   
