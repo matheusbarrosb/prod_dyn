@@ -20,6 +20,7 @@
 #' t0 = -1.1, t.steps = 365*10, L0 = 20, N0 = 0.4, a = 0.0064, b = 2.6,
 #' plot = TRUE, K_sup = 10)
 #' @export
+
 pred_B <- function(GR = NULL, N0 = NULL, M_ref = NULL, L_ref = NULL,
                    Lm = NULL, K = NULL,  Linf = NULL, t0 = NULL,
                    a = NULL, b = NULL, L0 = NULL,t.steps = NULL,

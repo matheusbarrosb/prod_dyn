@@ -38,6 +38,7 @@
 #' L0.mu = 30, L0.sd = 0, K_sup.mu = 40, K_sup.sd = 0,
 #' N = 1000, N_years = 10, progress = "TRUE", output.type = "complete")
 #' @export
+
 stoch_P <- function(GR.mu = NULL, GR.sd = NULL,
                     N0.mu = NULL, N0.sd = NULL,
                     M_ref.mu = NULL, M_ref.sd = NULL,

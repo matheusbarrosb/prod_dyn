@@ -41,6 +41,7 @@
 #' lwa.sd = 0.000000001, lwb.mu = 3.25, lwb.sd = 0.1,
 #' L0.mu = 20, L0.sd = 0, N_sim = 5, N_ite = 100)
 #' @export
+
 sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mean, low, up),
                         GR.mu = NULL, GR.sd = NULL, N0.mu = NULL, N0.sd = NULL,
                         M_ref.mu = NULL, M_ref.sd = NULL, L_ref.mu = NULL, L_ref.sd = NULL,
