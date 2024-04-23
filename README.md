@@ -11,7 +11,7 @@ The identification of Essential Fish Habitat (EFH), defined as the substrate nee
 
 This software allows the user to estimate biomass production rates per unit of area for species with available life-history and demographic information. I obtain production rates by stochastic simulation on population dynamics as follows:
 
-The rate of biomass production (GP - denoting Gross Production) can be represented as the product of simulated numbers-at-time and individual biomass-at-time integrated from recruitment to maximum age:
+The rate of biomass production (GP - denoting Gross Production) can be represented as the product of simulated numbers-at-time and individual biomass-at-time integrated from recruitment (t = 0) to maximum age (t_{max}):
 
 $$ GP = \int_{t = 0}^{t_{max}}\frac{\partial N}{\partial t} \frac{\partial W}{\partial t} $$
 
