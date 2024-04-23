@@ -39,7 +39,7 @@
 #' Lm.mu = 120, Lm.sd = 5, K.mu = 0.33, K.sd = 0.1, Linf.mu = 200,
 #' Linf.sd = 30, t0.mu = 0, t0.sd = 0, lwa.mu = 0.005,
 #' lwa.sd = 0.000000001, lwb.mu = 3.25, lwb.sd = 0.1,
-#' L0.mu = 20, L0.sd = 0, N_sim = 5, N_ite = 100)
+#' L0.mu = 20, L0.sd = 0, N_sim = 5, N_ite = 100, N_years = 7)
 #' @export
 
 sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mean, low, up),
@@ -48,7 +48,8 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                         Lm.mu = NULL, Lm.sd = NULL, K.mu = NULL, K.sd = NULL, 
                         Linf.mu = NULL, Linf.sd = NULL, t0.mu = NULL, t0.sd = NULL,
                         lwa.mu = NULL, lwa.sd = NULL, lwb.mu = NULL, lwb.sd = NULL,
-                        L0.mu = NULL, L0.sd = NULL, N_years = NULL, N_sim = 1000, N_ite = 1000) {
+                        L0.mu = NULL, L0.sd = NULL, N_years = NULL, N_sim = 1000, N_ite = 1000,
+                        juvGrowthType = "linear") {
   
   # random number generation for reproducible results
   set.seed(13)
@@ -71,13 +72,14 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
   
   # setup simulations
   out <- NULL
+  if (juvGrowthType == "linear") {
   if (par_to_vary == "GR") {
     for (i in 1:N_sim) {
       out[[i]] <- stoch_P(GR.mu = range[i], GR.sd = GR.sd, N0.mu = N0.mu, N0.sd = N0.sd,
                           M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                           Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                           t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
+                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "linear")
     }
   } else if (par_to_vary == "K") {
     for (i in 1:N_sim) {
@@ -85,7 +87,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                           M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                           Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = range[i], K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                           t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
+                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "linear")
     }
   } else if (par_to_vary == "Linf") {
     for (i in 1:N_sim) {
@@ -93,7 +95,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                           M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                           Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = range[i], Linf.sd = Linf.sd,
                           t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
+                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "linear")
     }
   } else if (par_to_vary == "Lm") {
     for (i in 1:N_sim) {
@@ -101,8 +103,45 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                           M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                           Lm.mu = range[i], Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                           t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
+                          L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "linear")
     }
+  }
+  } else if (juvGrowthType == "VB") {
+    
+    if (par_to_vary == "GR") {
+      for (i in 1:N_sim) {
+        out[[i]] <- stoch_P(GR.mu = range[i], GR.sd = GR.sd, N0.mu = N0.mu, N0.sd = N0.sd,
+                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
+                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
+                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
+                            L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "VB")
+      }
+    } else if (par_to_vary == "K") {
+      for (i in 1:N_sim) {
+        out[[i]] <- stoch_P(GR.mu = GR.mu, GR.sd = GR.sd, N0.mu = N0.mu, N0.sd = N0.sd,
+                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
+                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = range[i], K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
+                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
+                            L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "VB")
+      }
+    } else if (par_to_vary == "Linf") {
+      for (i in 1:N_sim) {
+        out[[i]] <- stoch_P(GR.mu = GR.mu, GR.sd = GR.sd, N0.mu = N0.mu, N0.sd = N0.sd,
+                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
+                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = range[i], Linf.sd = Linf.sd,
+                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
+                            L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "VB")
+      }
+    } else if (par_to_vary == "Lm") {
+      for (i in 1:N_sim) {
+        out[[i]] <- stoch_P(GR.mu = GR.mu, GR.sd = GR.sd, N0.mu = N0.mu, N0.sd = N0.sd,
+                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
+                            Lm.mu = range[i], Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
+                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
+                            L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "VB")
+      }
+    }
+    
   }
   
   # PLAYING WITH OUTPUTS
@@ -122,13 +161,14 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
   
   # convert baseline parameter value to GP first
   baseline_GP <- NULL
+  if (juvGrowthType == "linear") {
   if (par_to_vary == "GR") {
     
     baseline_GP <- stoch_P(GR.mu = baseline$mean, GR.sd = ((baseline$up - baseline$low)/3.92), N0.mu = N0.mu, N0.sd = N0.sd,
                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
+                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "linear")
     
   } else if (par_to_vary == "K") {
     
@@ -136,7 +176,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = baseline$mean, K.sd = ((baseline$up - baseline$low)/3.92), Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
+                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "linear")
     
   } else if (par_to_vary == "Linf") {
     
@@ -144,7 +184,7 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                            Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = baseline$mean, Linf.sd = ((baseline$up - baseline$low)/3.92),
                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
+                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "linear")
     
   } else if (par_to_vary == "Lm") {
     
@@ -152,8 +192,44 @@ sensitivity <- function(par_to_vary, input_range = c(0,100), baseline = list(mea
                            M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
                            Lm.mu = baseline$mean, Lm.sd = ((baseline$up - baseline$low)/3.92), K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
                            t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
-                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic")
+                           L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "linear")
     
+  }
+  } else if (juvGrowthType == "VB") {
+    
+    if (par_to_vary == "GR") {
+      
+      baseline_GP <- stoch_P(GR.mu = baseline$mean, GR.sd = ((baseline$up - baseline$low)/3.92), N0.mu = N0.mu, N0.sd = N0.sd,
+                             M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
+                             Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
+                             t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
+                             L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "VB")
+      
+    } else if (par_to_vary == "K") {
+      
+      baseline_GP <- stoch_P(GR.mu = GR.mu, GR.sd = GR.sd, N0.mu = N0.mu, N0.sd = N0.sd,
+                             M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
+                             Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = baseline$mean, K.sd = ((baseline$up - baseline$low)/3.92), Linf.mu = Linf.mu, Linf.sd = Linf.sd,
+                             t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
+                             L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "VB")
+      
+    } else if (par_to_vary == "Linf") {
+      
+      baseline_GP <- stoch_P(GR.mu = GR.mu, GR.sd = GR.sd, N0.mu = N0.mu, N0.sd = N0.sd,
+                             M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
+                             Lm.mu = Lm.mu, Lm.sd = Lm.sd, K.mu = K.mu, K.sd = K.sd, Linf.mu = baseline$mean, Linf.sd = ((baseline$up - baseline$low)/3.92),
+                             t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
+                             L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "VB")
+      
+    } else if (par_to_vary == "Lm") {
+      
+      baseline_GP <- stoch_P(GR.mu = GR.mu, GR.sd = GR.sd, N0.mu = N0.mu, N0.sd = N0.sd,
+                             M_ref.mu = M_ref.mu, M_ref.sd = M_ref.sd, L_ref.mu = L_ref.mu, L_ref.sd = L_ref.sd,
+                             Lm.mu = baseline$mean, Lm.sd = ((baseline$up - baseline$low)/3.92), K.mu = K.mu, K.sd = K.sd, Linf.mu = Linf.mu, Linf.sd = Linf.sd,
+                             t0.mu = t0.mu, t0.sd = t0.sd, lwa.mu = lwa.mu, lwa.sd = lwa.sd, lwb.mu = lwb.mu, lwb.sd = lwb.sd,
+                             L0.mu = L0.mu, L0.sd = L0.sd, N = N_ite, N_years = N_years, output.type = "basic", juvGrowthType = "VB")
+      
+    }
   }
   
   end.time <- Sys.time()

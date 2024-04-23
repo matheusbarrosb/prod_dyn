@@ -35,8 +35,8 @@
 #' Lm.mu = 120, Lm.sd = 0, K.mu = 0.33, K.sd = 0.05, Linf.mu = 200,
 #' Linf.sd = 30, t0.mu = 0, t0.sd = 0, lwa.mu = 0.005,
 #' lwa.sd = 0.0001, lwb.mu = 3.25, lwb.sd = 0.06,
-#' L0.mu = 30, L0.sd = 0, K_sup.mu = 40, K_sup.sd = 0,
-#' N = 1000, N_years = 10, progress = "TRUE", output.type = "complete")
+#' L0.mu = 30, L0.sd = 0, N = 1000, N_years = 10,
+#' progress = "TRUE", output.type = "complete", juvGrowthType = "linear)
 #' @export
 stoch_P <- function(GR.mu = NULL, GR.sd = NULL,
                     N0.mu = NULL, N0.sd = NULL,
@@ -51,29 +51,31 @@ stoch_P <- function(GR.mu = NULL, GR.sd = NULL,
                     L0.mu = NULL, L0.sd = NULL,
                     t.steps = NULL, N = 100,
                     plot = FALSE, N_years = NULL,
-                    progress = "TRUE", output.type = "complete") {
+                    progress = "TRUE", output.type = "complete",
+                    juvGrowthType = "linear") {
   
   # set error and warning messages
-  if (GR.mu <= 0) {stop("Growth rate (GR) must be a positive number")}
-  if (N0.mu <= 0) {stop("Initial abundance (N0) must be a positive number")}
-  if (M_ref.mu <= 0) {stop("Reference mortality (M_ref) must be a positive number")}
-  if (L_ref.mu <= 0) {stop("Reference length (L_ref) must be a positive number")}
-  if (Lm.mu <= 0) {stop("Length at maturity (Lm) must be a positive number")}
-  if (K.mu <= 0) {stop("von Bertalanffy growth rate must be a positive number")}
-  if (Linf.mu <= 0) {stop("von Bertalanffy asymptotic length must be a positive number")}
+  if (GR.mu <= 0)       {stop("Growth rate (GR) must be a positive number")}
+  if (N0.mu <= 0)       {stop("Initial abundance (N0) must be a positive number")}
+  if (M_ref.mu <= 0)    {stop("Reference mortality (M_ref) must be a positive number")}
+  if (L_ref.mu <= 0)    {stop("Reference length (L_ref) must be a positive number")}
+  if (Lm.mu <= 0)       {stop("Length at maturity (Lm) must be a positive number")}
+  if (K.mu <= 0)        {stop("von Bertalanffy growth rate must be a positive number")}
+  if (Linf.mu <= 0)     {stop("von Bertalanffy asymptotic length must be a positive number")}
   if (Linf.mu <= Lm.mu) {stop("Length at maturity (Lm) must be smaller than Linf")}
   if (is.null(lwa.mu) & is.null(lwb.mu)) {
     lwa.mu <- 0.001; lwb.mu = 3
     warning("Length-weight parameters not provided: the simulation is assuming isometry")
   }
-  if (L0.mu <= 0) {stop("Initial size (L0) must be a positive number")}
-  if (L0.mu > Lm.mu) {stop("Initial size (L0) must be smaller than length at maturity (Lm)")}
+  if (L0.mu <= 0)       {stop("Initial size (L0) must be a positive number")}
+  if (L0.mu > Lm.mu)    {stop("Initial size (L0) must be smaller than length at maturity (Lm)")}
   
   set.seed(13) # random number generator. Do not modify, that ensures
   # reproducible results
   
   # create a data frame with distributions of input parameters to be looped over
-  prior.df <- data.frame(rnorm(N, GR.mu, GR.sd),
+  prior.df <- data.frame(
+                         rnorm(N, GR.mu, GR.sd),
                          rnorm(N, N0.mu, N0.sd),
                          rnorm(N, M_ref.mu, M_ref.sd),
                          rnorm(N, L_ref.mu, L_ref.sd),
@@ -83,7 +85,8 @@ stoch_P <- function(GR.mu = NULL, GR.sd = NULL,
                          rnorm(N, t0.mu, t0.sd),
                          rnorm(N, lwa.mu, lwa.sd),
                          rnorm(N, lwb.mu, lwb.sd),
-                         rnorm(N, L0.mu, L0.sd))
+                         rnorm(N, L0.mu, L0.sd)
+                         )
   
   names(prior.df) <- c('GR', 'N0', 'M_ref', 'L_ref', 'Lm', 'K', 'Linf', 't0', 'lwa', 'lwb', 'L0')
   
@@ -92,23 +95,45 @@ stoch_P <- function(GR.mu = NULL, GR.sd = NULL,
   pb <- txtProgressBar(min = 0, max = N, style = 3, char = "-")
   
   for(i in 1:N) { # Monte Carlo procedure: loop over input parameter 
-    # distributions N times and collect results
+                  # distributions N times and collect results
     
-    out <- pred_B(GR = prior.df$GR[i],
-                  N0 = prior.df$N0[i],
-                  M_ref = prior.df$M_ref[i],
-                  L_ref = prior.df$L_ref[i],
-                  Lm = prior.df$Lm[i],
-                  K = prior.df$K[i],
-                  Linf = prior.df$Linf[i],
-                  t0 = prior.df$t0[i],
-                  a = prior.df$lwa[i],
-                  b = prior.df$lwb[i],
-                  L0 = prior.df$L0[i],
-                  t.steps = 365*N_years)
+    if (juvGrowthType == "linear") {
     
+      out <- pred_B(GR = prior.df$GR[i],
+                    N0 = prior.df$N0[i],
+                    M_ref = prior.df$M_ref[i],
+                    L_ref = prior.df$L_ref[i],
+                    Lm = prior.df$Lm[i],
+                    K = prior.df$K[i],
+                    Linf = prior.df$Linf[i],
+                    t0 = prior.df$t0[i],
+                    a = prior.df$lwa[i],
+                    b = prior.df$lwb[i],
+                    L0 = prior.df$L0[i],
+                    t.steps = 365*N_years, juvGrowthType = "linear")
+      
     
     out.df <- cbind(out.df, out$sim_values$GP, deparse.level = 0)
+    
+    } else if (juvGrowthType == "VB") {
+      
+      out <- pred_B(GR = prior.df$GR[i],
+                    N0 = prior.df$N0[i],
+                    M_ref = prior.df$M_ref[i],
+                    L_ref = prior.df$L_ref[i],
+                    Lm = prior.df$Lm[i],
+                    K = prior.df$K[i],
+                    Linf = prior.df$Linf[i],
+                    t0 = prior.df$t0[i],
+                    a = prior.df$lwa[i],
+                    b = prior.df$lwb[i],
+                    L0 = prior.df$L0[i],
+                    t.steps = 365*N_years, juvGrowthType = "VB")
+      
+      
+      out.df <- cbind(out.df, out$sim_values$GP, deparse.level = 0)
+      
+    }
     
     if (progress == "TRUE") {
       setTxtProgressBar(pb, i)
@@ -117,14 +142,14 @@ stoch_P <- function(GR.mu = NULL, GR.sd = NULL,
   
   close(pb)
   
-  Bacc.mu <- apply(out.df, 1, mean, na.rm = TRUE)
-  Bacc.up <- apply(out.df,1,quantile, probs = c(.8), na.rm = TRUE)
-  Bacc.low <- apply(out.df,1,quantile, probs = c(.2), na.rm = TRUE)
+  Bacc.mu  <- apply(out.df, 1, mean, na.rm = TRUE)
+  Bacc.up  <- apply(out.df, 1, quantile, probs = c(.8), na.rm = TRUE)
+  Bacc.low <- apply(out.df, 1, quantile, probs = c(.2), na.rm = TRUE)
   
   Bacc.out <- data.frame(Bacc.mu, Bacc.low, Bacc.up) # df with integrated biomass trajectories
-  GP <- c(max(Bacc.mu), max(Bacc.low), max(Bacc.up)) # accumulated biomass
+  GP       <- c(max(Bacc.mu), max(Bacc.low), max(Bacc.up)) # accumulated biomass
   names(Bacc.out) <- c("Mean", "Lower", "Upper")
-  names(GP) <- c("Mean", "Lower", "Upper")
+  names(GP)       <- c("Mean", "Lower", "Upper")
   
   if (output.type == "complete") {
     output <- list(GP, Bacc.out) # main function output
@@ -136,7 +161,7 @@ stoch_P <- function(GR.mu = NULL, GR.sd = NULL,
          xlab = "Time (days)", ylab = "Gross production",
          main = "Biomass over time")
     lines(Bacc.low, lty = 3)
-    lines(Bacc.up, lty = 3)
+    lines(Bacc.up,  lty = 3)
     
     plot(density(rnorm(N, mean = GP[1], sd = (GP[3] - GP[2])/3.92)),
          main = "Gross biomass production", col = "black",
